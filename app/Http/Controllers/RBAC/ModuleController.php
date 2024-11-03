@@ -18,14 +18,17 @@ class ModuleController extends Controller
     {
         $this->model = new Module();
         $this->childModel = new Permission();
+
+        $this->middleware(function ($request, $next) {
+            if (!can(request()->route()->action['as'])){
+                return returnData(5001, null, 'You are not authorized to access this page');
+            }
+            return $next($request);
+        });
     }
 
     public function index()
     {
-        if (!can('module_view')){
-            return $this->notPermitted();
-        }
-
         $keyword = input('keyword');
 
         $data = $this->model->where('parent_id', 0)
@@ -61,10 +64,6 @@ class ModuleController extends Controller
 
     public function store(Request $request)
     {
-        if (!can('module_add')){
-            return $this->notPermitted();
-        }
-
         $input = $request->all();
 
         $validate = $this->model->validate($input);
@@ -91,10 +90,6 @@ class ModuleController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!can('module_update')){
-            return $this->notPermitted();
-        }
-
         $input = $request->all();
 
         $validate = $this->model->validate($input);
@@ -115,10 +110,6 @@ class ModuleController extends Controller
 
     public function status()
     {
-        if (!can('module_update')){
-            return $this->notPermitted();
-        }
-
         try {
             $data = $this->model->where('id', request()->input('id'))->first();
 
@@ -150,11 +141,6 @@ class ModuleController extends Controller
 
     public function destroy($id)
     {
-
-        if (!can('module_delete')){
-            return $this->notPermitted();
-        }
-
         $user = $this->model->where('id', $id)->first();
 
         if ($user) {

@@ -22,6 +22,8 @@ class ModuleSeeder extends Seeder
         RolePermission::truncate();
         RoleModules::truncate();
 
+        $resourcePermissions = ['index', 'create', 'store', 'show','edit','update','destroy'];
+
         $modules = [
             [
                 'display_name' => 'Dashboard',
@@ -39,33 +41,33 @@ class ModuleSeeder extends Seeder
                 'submenus' => [
                     [
                         'display_name' => 'Modules',
-                        'name' => 'module',
+                        'name' => 'modules',
                         'link' => '/admin/module',
-                        'permissions' => ['add', 'update', 'delete', 'view'],
+                        'permissions' => array_merge($resourcePermissions, []),
                     ],
                     [
                         'display_name' => 'Roles',
-                        'name' => 'role',
+                        'name' => 'roles',
                         'link' => '/admin/role',
-                        'permissions' => ['add', 'update', 'delete', 'view'],
+                        'permissions' => array_merge($resourcePermissions, []),
                     ],
                     [
                         'display_name' => 'Module Permissions',
-                        'name' => 'module_permission',
+                        'name' => 'module_permissions',
                         'link' => '/admin/module_permission',
-                        'permissions' => ['add', 'update', 'delete', 'view'],
+                        'permissions' => array_merge($resourcePermissions, []),
                     ],
                     [
                         'display_name' => 'Role Permissions',
-                        'name' => 'role_permission',
+                        'name' => 'role_permissions',
                         'link' => '/admin/role_permissions',
-                        'permissions' => ['add', 'delete'],
+                        'permissions' => array_merge($resourcePermissions, []),
                     ],
                     [
                         'display_name' => 'Users',
-                        'name' => 'user',
+                        'name' => 'users',
                         'link' => '/admin/users',
-                        'permissions' => ['add', 'update', 'delete', 'view'],
+                        'permissions' => array_merge($resourcePermissions, []),
                         'submenus' => []
                     ],
                 ]
@@ -81,13 +83,13 @@ class ModuleSeeder extends Seeder
                         'display_name' => 'Configurations',
                         'name' => 'configuration',
                         'link' => '/admin/configurations',
-                        'permissions' => ['add', 'update', 'delete', 'view'],
+                        'permissions' => array_merge($resourcePermissions, []),
                     ],
                 ]
             ],
-            
-            
-        
+
+
+
         ];
 
         foreach ($modules as $data) {
@@ -166,7 +168,7 @@ class ModuleSeeder extends Seeder
 
     public function insertPermission($name, $permission, $display_name, $module_id)
     {
-        $new_name = $name . '_' . $permission;
+        $new_name = $name . '.' . $permission;
         $new_permission = new Permission();
         $new_permission->module_id = $module_id;
         $new_permission->name = $new_name;

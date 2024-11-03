@@ -17,6 +17,13 @@ class UserController extends Controller
     public function __construct()
     {
         $this->model = new User();
+
+        $this->middleware(function ($request, $next) {
+            if (!can(request()->route()->action['as'])){
+                return returnData(5001, null, 'You are not authorized to access this page');
+            }
+            return $next($request);
+        });
     }
 
     public function index()
